@@ -16,6 +16,8 @@ Irei pular algumas partes mais claras do Wiki:
 - Irei usar o [Kernel](kernel.org) padrão do Linux 
 - Irei usar a [Grub](https://wiki.archlinux.org/index.php/GRUB_(Portugu%C3%AAs)) para o [Bootloader](https://wiki.archlinux.org/index.php/Arch_boot_process_(Portugu%C3%AAs)#Gerenciador_de_boot)
 - Estou usando um SSD de 240GB e o HDD de 1TB 
+- Irei usar o [SDDM](https://wiki.archlinux.org/index.php/SDDM) como DM
+- Irei usar o [Plasma](https://wiki.archlinux.org/index.php/KDE#Plasma) como DE
 
 ### Primeiro passo, definir as partições: 
 Execute: 
@@ -31,13 +33,11 @@ Caso queira zerar tudo e criar uma nova tabela de partição (Recomendo que use 
 
 Feito isso vamos definir nossas partições, segue meu modelo ou [leia sobre outros exemplos](https://wiki.archlinux.org/index.php/Partitioning_(Portugu%C3%AAs)#Exemplos_de_leiaute):
 
-| Tamanho  | Tipo | Ponto de montagem |
-| ----- | ----- | ----- |
-| 223GB  | Linux | /mnt  |
-| 512MB  | [EFI System](https://wiki.archlinux.org/index.php/EFI_system_partition_(Portugu%C3%AAs))  | /mnt/boot |
-| 1TB  | Linux | /mnt/home |
-
-***/mnt e /mnt/boot estão usando o meu SSD de 240GB como armazenamento e o /mnt/home está usando meu HDD de 1TB***
+| Tamanho  | Tipo |
+| ----- | ----- |
+| 223GB  | Linux |
+| 512MB  | [EFI System](https://wiki.archlinux.org/index.php/EFI_system_partition_(Portugu%C3%AAs))  |
+| 1TB  | Linux |
 
 ### Após usar o cfdisk você precisa definir um [Sistema de arquivos](https://wiki.archlinux.org/index.php/File_systems_(Portugu%C3%AAs)) são apenas 3 comandos :) 
 
@@ -61,11 +61,11 @@ Lembrando que o sdX3 é referente ao /mnt/home
 
 ### Agora nossas partições estão desta forma: 
 
-| Tamanho  | Tipo | Ponto de montagem | [Sistema de arquivos](https://wiki.archlinux.org/index.php/File_systems_(Portugu%C3%AAs)) |
-| ----- | ----- | ----- | ----- |
-| 223GB  | Linux | /mnt  | F2FS |
-| 512MB  | [EFI System](https://wiki.archlinux.org/index.php/EFI_system_partition_(Portugu%C3%AAs))  | /mnt/boot | FAT32 |
-| 1TB  | Linux | /mnt/home  | ext4 |
+| Tamanho  | Tipo | [Sistema de arquivos](https://wiki.archlinux.org/index.php/File_systems_(Portugu%C3%AAs)) |
+| ----- | ----- | ----- |
+| 223GB  | Linux | F2FS |
+| 512MB  | [EFI System](https://wiki.archlinux.org/index.php/EFI_system_partition_(Portugu%C3%AAs))  | FAT32 |
+| 1TB  | Linux | ext4 |
 
 Agora precisamos montar nossas partições :) 
 
@@ -78,6 +78,15 @@ Agora precisamos montar nossas partições :)
 > mkdir -p /mnt/home
 
 > mount /dev/sdX3 /mnt/home
+
+***/mnt e /mnt/boot estão usando o meu SSD de 240GB como armazenamento e o /mnt/home está usando meu HDD de 1TB***
+
+Finalmente, o nosso resultado é: 
+| Tamanho  | Tipo | Ponto de montagem | [Sistema de arquivos](https://wiki.archlinux.org/index.php/File_systems_(Portugu%C3%AAs)) |
+| ----- | ----- | ----- | ----- |
+| 223GB  | Linux | /mnt  | F2FS |
+| 512MB  | [EFI System](https://wiki.archlinux.org/index.php/EFI_system_partition_(Portugu%C3%AAs))  | /mnt/boot | FAT32 |
+| 1TB  | Linux | /mnt/home  | ext4 |
 
 ### Então nossas partições estão prontas e montadas para receber o Arch, vamos agora para proxima parte.
 
@@ -136,13 +145,15 @@ https://wiki.archlinux.org/index.php/Libinput
 
 > grub-mkconfig -o /boot/grub/grub.cfg
 
-#### Vamos instalar um ambinete gráfico, essa parte é muito pessoal então sinta-se livre para usar um DE ou uma WM, nesse caso irei usar o gnome e para meu DM irei usar o GDM. 
+#### Vamos instalar um ambinete gráfico, essa parte é muito pessoal então sinta-se livre para usar um DE ou uma WM.
 
-> pacman -S gnome gdm
+> pacman -S plasma plasma-meta dolphin
+
+> systemctl enable sddm
 
 Esse momento é seu, instale quantos pacotes você quiser, irei dar alguns exemplos: 
-
-> pacman -S git python gimp sakura kitty
+**(Recomendo instalar esses, mas são opcionais)**
+> pacman -S git python gimp sakura kitty zsh mesa mesa-demos lib32-mesa lib32-mesa-demos xf86-video-nouveau vulkan-devel
 
 #### Agora vamos reiniciar a maquina;
 
@@ -154,9 +165,9 @@ Esse momento é seu, instale quantos pacotes você quiser, irei dar alguns exemp
 
 ### Seu sistema não encontrou o grub? Isso é normal para alguns notebooks.
 
-Dê boot novamente no pendriver, porém escolha "EFI Shell 1.2" alguma coisa, provavelmente a terceira ou quarta opção. 
+Dê boot novamente no pendriver, porém escolha "EFI Shell 2" alguma coisa, provavelmente a terceira ou quarta opção. 
 
-Agora vamos achar o EFI/grub dentro do EFI Shell. 
+Você vai iniciar dentro de um terminal preto/amarelo, agora vamos achar o EFI/grub(Aquela partição de 512MB) dentro do EFI Shell. 
 
 > map
 
@@ -164,19 +175,19 @@ Provavelmente vai aparecer
 **FS0: ...**
 **FS1: ...**
 **BLCK0: ...**
-ou semlhantes, nossa GRub está dentro do FS1(Provavelmente):
+ou semlhantes, nossa Grub está dentro do FS1(Provavelmente):
 
 > FS1:
 
 > ls 
 
-procure a pasta EFI (Cuidado para não confundir com a grub do pendriver 
+procure a pasta EFI (Cuidado para não confundir com a grub do pendriver que provavelmente é a **FS0:**) 
 
 > cd EFI
 
 > cd grub
 
-Dentro dessa pasta grub deve existir um arquivo único chamado grubx86_64.efi
+Dentro dessa pasta grub deve existir um arquivo único chamado **grubx86_64.efi** (Ou algo assim)
 
 > bcfg boot add 3 grubx86_64.efi "rEFInd Boot Manager"
 
@@ -186,12 +197,6 @@ Agora é só apertar Ctrl + Alt + Del e remover o pendriver, agora o Efi deve co
 ### Dentro do seu sistema operacional (você vai estar dentro do TTY) você vai precisar habilitar alguns itens, vamos lá: 
 
 __Lembra-se que o login é root e a senha você colocou lá atrás com o passwd root_
-
-> systemctl enable gdm NetworkManager
-
-> reboot 
-
-Agora o GDM vai iniciar normalmente.
 
 Abra o Terminal e execute os seguintes comandos: 
 
@@ -227,4 +232,4 @@ Você não vai mais receber o aviso da falta desses dois firmware :)
 
 > reboot
 
-Dai pra frente é só se divertir com seu sistema operacional. 
+Dai pra frente é só se divertir com seu sistema operacional. Recomendo [ler isso](https://wiki.archlinux.org/index.php/General_recommendations) caso seja novato no ArchLinux. 
