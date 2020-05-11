@@ -194,8 +194,6 @@ Dentro dessa pasta grub deve existir um arquivo único chamado **grubx86_64.efi*
 Agora é só apertar Ctrl + Alt + Del e remover o pendriver, agora o Efi deve conseguir dar boot na Grub. 
 
 
-### Dentro do seu sistema operacional (você vai estar dentro do TTY) você vai precisar habilitar alguns itens, vamos lá: 
-
 __Lembra-se que o login é root e a senha você colocou lá atrás com o passwd root_
 
 Abra o Terminal e execute os seguintes comandos: 
@@ -204,7 +202,7 @@ Abra o Terminal e execute os seguintes comandos:
 
 > pacman -Syy
 
-Você pode criar um user pelo painel do Gnome ou seguir a [ArchWiki](https://wiki.archlinux.org/index.php/Users_and_groups#User_management) e fazer um user por linha de comando
+Você pode criar um user pelo painel do Kde ou seguir a [ArchWiki](https://wiki.archlinux.org/index.php/Users_and_groups#User_management) e fazer um user por linha de comando
 
 Para iniciar a ZRAM, basta seguir o [Wiki](https://wiki.archlinux.org/index.php/Improving_performance_(Portugu%C3%AAs)#Swap_na_zRAM_usando_uma_regra_do_udev): 
 https://wiki.archlinux.org/index.php/Improving_performance_(Portugu%C3%AAs)#Swap_na_zRAM_usando_uma_regra_do_udev
