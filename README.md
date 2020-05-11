@@ -45,19 +45,19 @@ Feito isso vamos definir nossas partições, segue meu modelo ou [leia sobre out
 
 > mkfs.f2fs /dev/sdX1 -f
 
-sdX1 é referente ao /mnt e o formato f2fs é para SSD, use **mkfs.ext4 /dev/sdX1** caso não seja um SSD;
+sdX1 é referente a partição de **223GB** e o formato **f2fs** é para **SSD**, use **mkfs.ext4 /dev/sdX1** caso não seja um SSD;
 
 .
 
 > mkfs.fat -F32 /dev/sdX2
 
-Lembrando que o sdX2 é referente ao /mnt/boot e o formato sempre deve ser FAT32
+Lembrando que o sdX2 é referente a partição de **512MB** do tipo **EFI System** e o formato **sempre** deve ser FAT32
 
 .
 
 > mkfs.ext4 /dev/sdX3
 
-Lembrando que o sdX3 é referente ao /mnt/home
+Lembrando que o sdX3 é referente a partição de **1TB**
 
 ### Agora nossas partições estão desta forma: 
 
